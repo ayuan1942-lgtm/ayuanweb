@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <title>当前位置</title>
+  <title>定位记录</title>
   <style>
     * {
       box-sizing: border-box;
@@ -48,103 +48,23 @@
     }
 
     .app-title {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
       letter-spacing: 1px;
       color: #1f2937;
-    }
-
-    .content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 24px 16px;
-    }
-
-    .state {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 32px 0;
-      font-size: 14px;
-      color: #6b7280;
-      text-align: center;
-    }
-
-    .state.error {
-      color: #d14343;
-      line-height: 1.6;
-    }
-
-    .spinner {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      border: 2px solid #dfe4ea;
-      border-top-color: #4f7cff;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .coords {
-      padding: 18px 20px;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(31, 41, 55, 0.06);
-    }
-
-    .coord-row {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      padding: 14px 0;
-      border-bottom: 1px dashed #eceef2;
-    }
-
-    .coord-row:last-of-type {
-      border-bottom: none;
-    }
-
-    .coord-label {
-      font-size: 13px;
-      color: #9aa1ab;
-      letter-spacing: 1px;
-    }
-
-    .coord-value {
-      font-size: 22px;
-      font-weight: 600;
-      color: #1f2937;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .coord-meta {
-      padding-top: 12px;
-      font-size: 12px;
-      color: #b3b9c2;
-    }
-
-    .footer {
-      padding: 12px 16px calc(env(safe-area-inset-bottom) + 16px);
     }
 
     .action-btn {
-      width: 100%;
-      height: 48px;
+      flex-shrink: 0;
+      margin-left: auto;
+      height: 32px;
+      padding: 0 14px;
       border: none;
-      border-radius: 12px;
+      border-radius: 16px;
       background: #4f7cff;
       color: #fff;
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 600;
-      letter-spacing: 1px;
       cursor: pointer;
       transition: opacity 0.15s;
     }
@@ -158,22 +78,107 @@
       cursor: default;
     }
 
-    .hidden {
-      display: none;
+    .content {
+      flex: 1;
+      padding: 16px;
+    }
+
+    .hint {
+      margin: 0 0 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #fdecec;
+      color: #d14343;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .empty {
+      padding: 48px 0;
+      text-align: center;
+      font-size: 13px;
+      color: #b3b9c2;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .record {
+      padding: 14px 16px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(31, 41, 55, 0.05);
+    }
+
+    .record-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .remove-btn {
+      flex-shrink: 0;
+      margin-left: auto;
+      padding: 0;
+      border: none;
+      background: none;
+      color: #c3c9d2;
+      font-size: 12px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .remove-btn:hover,
+    .remove-btn:active {
+      color: #d14343;
+    }
+
+    .coord {
+      display: flex;
+      flex: 1;
+      min-width: 0;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .coord-label {
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: #9aa1ab;
+    }
+
+    .coord-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1f2937;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .record-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #eceef2;
+      font-size: 11px;
+      color: #b3b9c2;
+      font-variant-numeric: tabular-nums;
     }
 
     /* 平板 / 桌面：居中卡片 */
     @media (min-width: 640px) {
       .page {
         align-items: center;
-        justify-content: center;
         padding: 32px 16px;
         background: radial-gradient(circle at 50% 0%, #eef2ff 0%, #f5f7fa 60%, #f5f7fa 100%);
       }
 
       .app-bar,
-      .content,
-      .footer {
+      .content {
         width: 100%;
         max-width: 400px;
       }
@@ -186,24 +191,12 @@
       }
 
       .content {
-        background: #fff;
-        border-left: 1px solid #eef0f4;
-        border-right: 1px solid #eef0f4;
-        padding: 24px 20px;
-      }
-
-      .coords {
-        padding: 0;
-        border-radius: 0;
-        box-shadow: none;
-      }
-
-      .footer {
+        flex: 0 1 auto;
         background: #fff;
         border: 1px solid #eef0f4;
         border-top: none;
         border-radius: 0 0 18px 18px;
-        padding: 0 20px 20px;
+        padding: 16px 20px 20px;
       }
     }
   </style>
@@ -212,81 +205,141 @@
   <div class="page">
     <header class="app-bar">
       <div class="pin" aria-hidden="true"></div>
-      <span class="app-title">当前位置</span>
+      <span class="app-title">定位记录</span>
+      <button id="locate-btn" class="action-btn">获取定位</button>
     </header>
 
     <main class="content">
-      <div id="state-loading" class="state">
-        <span class="spinner"></span>
-        <span>正在获取定位…</span>
-      </div>
-
-      <div id="state-error" class="state error hidden">
-        <span id="error-text"></span>
-      </div>
-
-      <div id="coords" class="coords hidden">
-        <div class="coord-row">
-          <span class="coord-label">经度</span>
-          <span id="longitude" class="coord-value">-</span>
-        </div>
-        <div class="coord-row">
-          <span class="coord-label">纬度</span>
-          <span id="latitude" class="coord-value">-</span>
-        </div>
-        <div id="accuracy" class="coord-meta"></div>
-      </div>
+      <p id="hint" class="hint" hidden></p>
+      <div id="empty" class="empty">暂无记录，点击右上角获取定位</div>
+      <div id="list" class="list"></div>
     </main>
-
-    <footer class="footer">
-      <button id="locate-btn" class="action-btn">重新定位</button>
-    </footer>
   </div>
 
   <script>
-    const loadingEl = document.getElementById('state-loading')
-    const errorEl = document.getElementById('state-error')
-    const errorTextEl = document.getElementById('error-text')
-    const coordsEl = document.getElementById('coords')
-    const longitudeEl = document.getElementById('longitude')
-    const latitudeEl = document.getElementById('latitude')
-    const accuracyEl = document.getElementById('accuracy')
+    const STORAGE_KEY = 'location-records'
+
+    const listEl = document.getElementById('list')
+    const emptyEl = document.getElementById('empty')
+    const hintEl = document.getElementById('hint')
     const btn = document.getElementById('locate-btn')
 
-    const format = (num) => num.toFixed(6)
+    const loadRecords = () => {
+      try {
+        const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+        return Array.isArray(data) ? data : []
+      } catch {
+        return []
+      }
+    }
 
-    const showState = (state) => {
-      loadingEl.classList.toggle('hidden', state !== 'loading')
-      errorEl.classList.toggle('hidden', state !== 'error')
-      coordsEl.classList.toggle('hidden', state !== 'success')
-      btn.disabled = state === 'loading'
+    const records = loadRecords()
+
+    const saveRecords = () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records))
+    }
+
+    const pad = (n) => String(n).padStart(2, '0')
+
+    const formatTime = (ts) => {
+      const d = new Date(ts)
+      return (
+        d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) +
+        ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds())
+      )
+    }
+
+    const el = (tag, className, text) => {
+      const node = document.createElement(tag)
+      if (className) node.className = className
+      if (text !== undefined) node.textContent = text
+      return node
+    }
+
+    const buildRecord = (record, index) => {
+      const item = el('div', 'record')
+      const top = el('div', 'record-top')
+
+      const lngBox = el('div', 'coord')
+      lngBox.append(
+        el('span', 'coord-label', '经度'),
+        el('span', 'coord-value', record.lng.toFixed(6)),
+      )
+
+      const latBox = el('div', 'coord')
+      latBox.append(
+        el('span', 'coord-label', '纬度'),
+        el('span', 'coord-value', record.lat.toFixed(6)),
+      )
+
+      const removeBtn = el('button', 'remove-btn', '删除')
+      removeBtn.type = 'button'
+      removeBtn.addEventListener('click', () => removeRecord(index))
+
+      top.append(lngBox, latBox, removeBtn)
+
+      const meta = el('div', 'record-meta')
+      meta.append(
+        el('span', '', '精度约 ' + Math.round(record.accuracy) + ' 米'),
+        el('span', '', formatTime(record.time)),
+      )
+
+      item.append(top, meta)
+      return item
+    }
+
+    const removeRecord = (index) => {
+      records.splice(index, 1)
+      saveRecords()
+      render()
+    }
+
+    const render = () => {
+      listEl.textContent = ''
+      emptyEl.hidden = records.length > 0
+      records.forEach((record, index) => listEl.append(buildRecord(record, index)))
+    }
+
+    const showHint = (message) => {
+      hintEl.textContent = message
+      hintEl.hidden = false
     }
 
     const locate = () => {
+      hintEl.hidden = true
+
       if (!('geolocation' in navigator)) {
-        errorTextEl.textContent = '当前浏览器不支持定位功能'
-        showState('error')
+        showHint('当前浏览器不支持定位功能')
         return
       }
 
-      showState('loading')
+      btn.disabled = true
+      btn.textContent = '定位中…'
+
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          longitudeEl.textContent = format(pos.coords.longitude)
-          latitudeEl.textContent = format(pos.coords.latitude)
-          accuracyEl.textContent = '精度约 ' + Math.round(pos.coords.accuracy) + ' 米'
-          showState('success')
+          records.unshift({
+            lng: pos.coords.longitude,
+            lat: pos.coords.latitude,
+            accuracy: pos.coords.accuracy,
+            time: Date.now(),
+          })
+          saveRecords()
+          render()
+          btn.disabled = false
+          btn.textContent = '获取定位'
         },
         (err) => {
-          errorTextEl.textContent = err.message || '定位失败'
-          showState('error')
+          showHint(err.message || '定位失败')
+          btn.disabled = false
+          btn.textContent = '获取定位'
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
       )
     }
 
     btn.addEventListener('click', locate)
-    locate()
+    render()
   </script>
 </body>
 </html>
